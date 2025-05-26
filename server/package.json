@@ -41,7 +41,8 @@
   },
   "type": "commonjs",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "tsc"
   },
   "lint-staged": {
     "*.{ts, js, json}": [
@@ -50,10 +51,5 @@
     "*.{ts, js}": [
       "eslint --fix"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
