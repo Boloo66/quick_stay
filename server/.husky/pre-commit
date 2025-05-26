@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-npx lint-stage
-yarn run build

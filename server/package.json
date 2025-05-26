@@ -15,9 +15,11 @@
     "mongoose": "^8.15.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.0",
+    "npm-run-all": "^4.1.5",
     "reflect-metadata": "^0.2.2",
     "svix": "^1.66.0",
     "tsconfig-paths": "^4.2.0",
+    "tsup": "^8.5.0",
     "znv": "^0.5.0",
     "zod": "^3.25.28",
     "zod-validation-error": "^3.4.1"
@@ -42,14 +44,21 @@
   },
   "type": "commonjs",
   "scripts": {
-    "prepare": "husky",
-    "build": "tsc"
+    "clean-up": "rm -rf dist",
+    "lint": "eslint ./src --ext .ts,.js",
+    "lint:fix": "eslint ./src --ext .ts,.js --fix",
+    "format": "prettier --log-leve=warn --cache --write ./src",
+    "mongo:migration:run": "migrate up",
+    "mongo:migration:create": "migrate create",
+    "prestart": "run-s mongo:migration:run lint",
+    "start": "node dist/index.js",
+    "predev": "run-s lint:fix",
+    "dev": "node --import=tsx --watch src/index.ts",
+    "build": "run-s clean-up && tsc --noEmit && tsup src/index.ts --format cjs --minify"
   },
   "lint-staged": {
     "*.{ts,js, json}": [
-      "prettier --write"
-    ],
-    "*.{ts,js}": [
+      "prettier --write",
       "eslint --fix"
     ]
   }
