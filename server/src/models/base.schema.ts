@@ -1,7 +1,8 @@
-import { Schema, SchemaOptions, Types } from 'mongoose';
+import { Schema, SchemaDefinition, SchemaOptions, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
-
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
+import mongooseLeanGetters from 'mongoose-lean-getters';
 export interface IBaseModel {
   id: string;
   _id: Types.ObjectId;
@@ -29,21 +30,20 @@ export const defaultSchemaOptions: SchemaOptions = {
 };
 
 export const mergeWithBaseSchema = (
-  schemaDef: Schema,
+  schemaDef: SchemaDefinition,
   customSchemaOptions: Partial<SchemaOptions> = {},
-  paginate: boolean = false,
-  aggregate: boolean = false
+  paginateModel: boolean = false,
+  aggregateModel: boolean = false
 ) => {
-  if (!schemaDef || Object.keys(schemaDef.paths).length === 0) {
+  if (!schemaDef || Object.keys(schemaDef).length === 0) {
     throw new Error('Schema must have at least one path defined');
   }
 
   const schema = new Schema(
     {
-      ...schemaDef.obj,
+      ...schemaDef,
       deletedAt: {
         type: Date,
-        default: null,
       },
       __v: {
         type: Number,
@@ -56,6 +56,23 @@ export const mergeWithBaseSchema = (
     }
   );
 
-  paginate && schema.plugin(paginate);
-  aggregate && schema.plugin;
+  //@typescript-eslint/no-unused-expressions
+  void (paginateModel && schema.plugin(paginate));
+  //@typescript-eslint/no-unused-expressions
+  void (aggregateModel && schema.plugin(aggregatePaginate));
+  schema.plugin(mongooseLeanVirtuals);
+  schema.plugin(mongooseLeanGetters);
+
+  return schema;
+};
+
+export const mongoIdToString = (v: Types.ObjectId) => `${v}`;
+
+export type SchemaObjectIdType = Types.ObjectId;
+export type StringOrMongoId = Types.ObjectId | string;
+
+export const isMongoId = (
+  id: string | Types.ObjectId
+): id is Types.ObjectId => {
+  return Types.ObjectId.isValid(id) && new Types.ObjectId(id).toString() === id;
 };
