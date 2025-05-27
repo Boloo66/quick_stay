@@ -1,0 +1,8 @@
+{
+  "error": "app.use() requires a middleware function",
+  "level": "\u001b[31merror\u001b[39m",
+  "message": "\u001b[31mapp.use() requires a middleware function\u001b[39m",
+  "requestId": "unknown",
+  "stack": "TypeError: app.use() requires a middleware function\n    at Function.use (/home/tokenz/quick_stay/server/node_modules/express/lib/application.js:213:11)\n    at App.setUpRouters (/home/tokenz/quick_stay/server/src/app.ts:59:14)\n    at App.init (/home/tokenz/quick_stay/server/src/app.ts:70:10)\n    at main (/home/tokenz/quick_stay/server/src/index.ts:37:37)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)",
+  "timestamp": "2025-05-27 03:17:31"
+}
