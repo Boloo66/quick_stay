@@ -1,4 +1,4 @@
-import { Schema, SchemaDefinition, SchemaOptions, Types } from 'mongoose';
+import { Schema, SchemaOptions, Types } from 'mongoose';
 import paginate from 'mongoose-paginate-v2';
 import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
 import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
@@ -30,7 +30,7 @@ export const defaultSchemaOptions: SchemaOptions = {
 };
 
 export const mergeWithBaseSchema = (
-  schemaDef: SchemaDefinition,
+  schemaDef: Schema,
   customSchemaOptions: Partial<SchemaOptions> = {},
   paginateModel: boolean = false,
   aggregateModel: boolean = false
@@ -41,7 +41,6 @@ export const mergeWithBaseSchema = (
 
   const schema = new Schema(
     {
-      ...schemaDef,
       deletedAt: {
         type: Date,
       },
@@ -54,11 +53,9 @@ export const mergeWithBaseSchema = (
       ...defaultSchemaOptions,
       ...customSchemaOptions,
     }
-  );
+  ).add(schemaDef);
 
-  //@typescript-eslint/no-unused-expressions
   void (paginateModel && schema.plugin(paginate));
-  //@typescript-eslint/no-unused-expressions
   void (aggregateModel && schema.plugin(aggregatePaginate));
   schema.plugin(mongooseLeanVirtuals);
   schema.plugin(mongooseLeanGetters);

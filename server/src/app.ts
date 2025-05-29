@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import express, { Application } from 'express';
+import express, { Application, Router } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -10,11 +10,12 @@ import * as errorHandler from './middlewares/error-handler';
 import { getContainer } from './ioc/config';
 
 import type { Container } from 'inversify';
+import { TYPES } from './ioc/types';
 
 export class App {
   constructor(
     private app: Application,
-    private _container: Container
+    private container: Container
   ) {}
 
   setUpPreMiddlewares() {
@@ -54,9 +55,7 @@ export class App {
       res.status(200).json({ status: 'ok' });
     });
 
-    //use container here
-
-    // this.app.use('/api/v1');
+    this.app.use('/api/v1', this.container.get<Router>(TYPES.V1Router));
     // this.app.use('api/webhooks');
   }
 
